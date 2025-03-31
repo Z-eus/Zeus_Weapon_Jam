@@ -1,4 +1,3 @@
-local ped = PlayerPedId()
 local JammedWeapons = {}
 
 function Animation()
@@ -9,7 +8,7 @@ function Animation()
         Wait(0)
     end
     Wait(Config.JamFixAnimationDelay)
-    TaskPlayAnim(ped, AnimDict, AnimName, 8.0, -8.0, -1, 0, 0, false, false, false)
+    TaskPlayAnim(PlayerPedId(), AnimDict, AnimName, 8.0, -8.0, -1, 0, 0, false, false, false)
 end
 
 function Minigame(WeaponHash)
@@ -21,7 +20,7 @@ function Minigame(WeaponHash)
     if success == 100 then
         JammedWeapons[WeaponHash] = nil
         print("The weapon is fixed, you can use it again") -- You can add your notify
-        ClearPedTasks(ped)
+        ClearPedTasks(PlayerPedId())
     else
         print("Fail, try again!")
     end
@@ -43,14 +42,14 @@ end
 CreateThread(function()
     while true do
         Wait(0)
-        local _, CurrentWeaponHash = GetCurrentPedWeapon(ped, true)
+        local _, CurrentWeaponHash = GetCurrentPedWeapon(PlayerPedId(), true)
 
         if JammedWeapons[CurrentWeaponHash] then
-            DisablePlayerFiring(ped, true)
+            DisablePlayerFiring(PlayerPedId(), true)
             if IsControlJustPressed(0, Config.JamFixKey) then
                 Minigame(CurrentWeaponHash)
             end
-        elseif IsPedShooting(ped) and not JammedWeapons[CurrentWeaponHash] then
+        elseif IsPedShooting(PlayerPedId()) and not JammedWeapons[CurrentWeaponHash] then
             CheckGunJam(CurrentWeaponHash)
         end
     end
